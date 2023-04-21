@@ -27,7 +27,11 @@
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <x-button>
+                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
+                    {{ __('Already registered?') }}
+                </a>
+
+                <x-button class="ml-3">
                     {{ __('Email Password Reset Link') }}
                 </x-button>
             </div>
