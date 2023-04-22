@@ -3,28 +3,34 @@
 namespace App\Http\Controllers;
 
 use App\Interfaces\WeatherRepositoryInterface;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
+use App\Interfaces\UserRepositoryInterface;
+use Illuminate\View\View;
 
 class HomeController extends Controller
 {
-    protected $weatherRepository;
+    protected WeatherRepositoryInterface $weatherRepository;
+    protected UserRepositoryInterface $userRepository;
 
     /**
      * @param WeatherRepositoryInterface $weatherRepository
+     * @param UserRepositoryInterface $userRepository
      */
-    public function __construct(WeatherRepositoryInterface $weatherRepository)
+    public function __construct(WeatherRepositoryInterface $weatherRepository, UserRepositoryInterface $userRepository)
     {
         $this->weatherRepository = $weatherRepository;
+        $this->userRepository = $userRepository;
     }
 
-    public function index()
+    /**
+     * @return View
+     */
+    public function index(): View
     {
-        $data = [
-            'weather_data' => $this->weatherRepository->getWeatherByLocation('{"lat": 51.5084,"lon": -0.1256}')
-        ];
+        $userData = $this->userRepository->getCurrentUser();
 
-        return view('home', $data);
+        return view('home', [
+            'userData' => $userData,
+            'weatherData' => $this->weatherRepository->getWeatherByLocation($userData['location'])
+        ]);
     }
 }

@@ -12,7 +12,12 @@
                     You're logged in!
                 </div>
                 <div class="p-6 bg-white border-b border-gray-200">
-                    @json($weather_data)
+                    <pre>
+                        @dump($userData)
+                    </pre>
+                    <pre>
+                        @dump($weatherData)
+                    </pre>
                 </div>
             </div>
         </div>
