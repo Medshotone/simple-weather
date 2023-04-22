@@ -5,7 +5,6 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\WeatherRepository;
 use App\Interfaces\WeatherRepositoryInterface;
-use App\Interfaces\WeatherServicesInterface;
 use App\Services\OpenWeatherMapService;
 
 class WeatherServiceProvider extends ServiceProvider

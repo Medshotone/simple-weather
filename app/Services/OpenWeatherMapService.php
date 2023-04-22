@@ -3,31 +3,27 @@
 namespace App\Services;
 
 use App\Interfaces\WeatherServicesInterface;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Http;
 
 class OpenWeatherMapService implements WeatherServicesInterface
 {
-    protected $guzzle;
-    protected $api_key;
-    protected $api_url;
-    protected $cache_ttl;
+    protected string $api_key;
+    protected string $api_url;
+    protected int $cache_ttl;
 
     public function __construct()
     {
-        $this->guzzle = new Client();
         $this->api_key = env('OPENWEATHERMAP_API_KEY');
         $this->api_url = env('OPENWEATHERMAP_URL');
         $this->cache_ttl = env('OPENWEATHERMAP_CACHE_TTL');
     }
 
     /**
-     * @param $location
+     * @param string $location
      * @return array
-     * @throws GuzzleException
      */
-    public function getWeatherByLocation($location): array
+    public function getWeatherByLocation(string $location): array
     {
         if ($weather_data = $this->getWeatherDataCache($location)) {
             return $weather_data;
@@ -40,35 +36,37 @@ class OpenWeatherMapService implements WeatherServicesInterface
         }
 
         $query = [
-            'lon' => $coordinates['lon'],
             'lat' => $coordinates['lat'],
+            'lon' => $coordinates['lon'],
             'appid' => $this->api_key,
         ];
 
-        $weather_data = json_decode($this->guzzle->get($this->api_url, [
-            'query' => $query
-        ])->getBody(), true);
+        $response = Http::get($this->api_url, $query);
 
-        return $this->setWeatherDataCache($location, $weather_data);
+        if (!$response->successful()) {
+            return json_decode($response->getBody(), true);
+        }
+
+        return $this->setWeatherDataCache($location, $response->getBody());
     }
 
     /**
-     * @param $location
-     * @param array $weather_data
+     * @param string $location
+     * @param string $weather_data
      * @return array
      */
-    public function setWeatherDataCache($location, array $weather_data): array
+    public function setWeatherDataCache(string $location, string $weather_data): array
     {
-        Redis::set($location, json_encode($weather_data), $this->cache_ttl);
+        Redis::set($location, $weather_data, $this->cache_ttl);
 
-        return $weather_data;
+        return json_decode($weather_data, true);
     }
 
     /**
-     * @param $location
+     * @param string $location
      * @return array
      */
-    public function getWeatherDataCache($location): array
+    public function getWeatherDataCache(string $location): array
     {
         if (!Redis::exists($location)) {
             return [];

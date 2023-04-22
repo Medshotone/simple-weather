@@ -7,7 +7,7 @@ use App\Interfaces\WeatherServicesInterface;
 
 class WeatherRepository implements WeatherRepositoryInterface
 {
-    protected $weatherService;
+    protected WeatherServicesInterface $weatherService;
 
     /**
      * @param WeatherServicesInterface $weatherService
