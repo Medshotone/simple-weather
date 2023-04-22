@@ -16,6 +16,11 @@ use App\Http\Controllers\HomeController;
 
 Route::redirect('/', '/home');
 
+// Google login
+Route::get('login/google', [App\Http\Controllers\Auth\LoginUserController::class, 'redirectToGoogle'])
+    ->name('login.google');
+Route::get('login/google/callback', [App\Http\Controllers\Auth\LoginUserController::class, 'handleGoogleCallback']);
+
 Route::get('/home', [HomeController::class, 'index'])
     ->middleware(['auth'])
     ->name('home');
