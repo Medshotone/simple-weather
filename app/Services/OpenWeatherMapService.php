@@ -20,24 +20,20 @@ class OpenWeatherMapService implements WeatherServicesInterface
     }
 
     /**
-     * @param string $location
+     * @param string $lat
+     * @param string $lon
      * @return array
      */
-    public function getWeatherByLocation(string $location): array
+    public function getWeatherByLocation(string $lat, string $lon): array
     {
-//        if ($weather_data = $this->getWeatherDataCache($location)) {
-//            return $weather_data;
-//        }
-
-        $coordinates = json_decode($location, true);
-
-        if (empty($coordinates['lon']) || empty($coordinates['lat'])) {
-            return [];
+        $cash_name = 'location_' . $lat . '+' . $lon;
+        if ($weather_data = $this->getWeatherDataCache($cash_name)) {
+            return $weather_data;
         }
 
         $query = [
-            'lat' => $coordinates['lat'],
-            'lon' => $coordinates['lon'],
+            'lat' => $lat,
+            'lon' => $lon,
             'appid' => $this->api_key,
         ];
 
@@ -47,7 +43,7 @@ class OpenWeatherMapService implements WeatherServicesInterface
             return json_decode($response->getBody(), true);
         }
 
-        return $this->setWeatherDataCache($location, $response->getBody())['main'] ?? [];
+        return $this->setWeatherDataCache($cash_name, $response->getBody())['main'] ?? [];
     }
 
     /**

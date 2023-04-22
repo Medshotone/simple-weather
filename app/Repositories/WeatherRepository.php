@@ -18,11 +18,12 @@ class WeatherRepository implements WeatherRepositoryInterface
     }
 
     /**
-     * @param string $location
+     * @param string $lat
+     * @param string $lon
      * @return array
      */
-    public function getWeatherByLocation(string $location): array
+    public function getWeatherByLocation(string $lat, string $lon): array
     {
-        return $this->weatherService->getWeatherByLocation($location);
+        return $this->weatherService->getWeatherByLocation($lat, $lon);
     }
 }

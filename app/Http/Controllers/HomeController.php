@@ -30,7 +30,7 @@ class HomeController extends Controller
 
         return view('home', [
             'userData' => $userData,
-            'weatherData' => $this->weatherRepository->getWeatherByLocation($userData['location'])
+            'weatherData' => $this->weatherRepository->getWeatherByLocation($userData['lat'], $userData['lon'])
         ]);
     }
 }

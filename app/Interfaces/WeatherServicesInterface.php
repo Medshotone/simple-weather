@@ -5,8 +5,9 @@ namespace App\Interfaces;
 interface WeatherServicesInterface
 {
     /**
-     * @param string $location
+     * @param string $lat
+     * @param string $lon
      * @return array
      */
-    public function getWeatherByLocation(string $location): array;
+    public function getWeatherByLocation(string $lat, string $lon): array;
 }
