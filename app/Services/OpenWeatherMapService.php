@@ -25,9 +25,9 @@ class OpenWeatherMapService implements WeatherServicesInterface
      */
     public function getWeatherByLocation(string $location): array
     {
-        if ($weather_data = $this->getWeatherDataCache($location)) {
-            return $weather_data;
-        }
+//        if ($weather_data = $this->getWeatherDataCache($location)) {
+//            return $weather_data;
+//        }
 
         $coordinates = json_decode($location, true);
 
@@ -47,7 +47,7 @@ class OpenWeatherMapService implements WeatherServicesInterface
             return json_decode($response->getBody(), true);
         }
 
-        return $this->setWeatherDataCache($location, $response->getBody());
+        return $this->setWeatherDataCache($location, $response->getBody())['main'] ?? [];
     }
 
     /**
