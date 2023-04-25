@@ -10,8 +10,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Validator;
 
-class LoginUserController extends Controller
+class OAuthLoginController extends Controller
 {
 
     public function __construct()
@@ -35,7 +36,19 @@ class LoginUserController extends Controller
         $googleUser = Socialite::driver('google')->user();
 
         $user = User::where('email', '=', $googleUser->email)->first();
+
         if (!$user) {
+            $validator = Validator::make((array)$googleUser, [
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255'],
+                'id' => ['required', 'string', 'max:255'],
+            ]);
+
+            if ($validator->fails()) {
+                return redirect(route('login'))
+                    ->withErrors(['email' => trans('auth.Google failed')]);
+            }
+
             $user = User::create([
                 'name' => (string)$googleUser->name,
                 'email' => (string)$googleUser->email,
