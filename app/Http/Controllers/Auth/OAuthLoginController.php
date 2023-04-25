@@ -3,26 +3,24 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Interfaces\UserRepositoryInterface;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Validator;
 
 class OAuthLoginController extends Controller
 {
+    protected UserRepositoryInterface $userRepository;
 
-    public function __construct()
+    public function __construct(UserRepositoryInterface $userRepository)
     {
         $this->middleware('guest')->except('logout');
+        $this->userRepository = $userRepository;
     }
 
-    /**
-     * @return RedirectResponse
-     */
     public function redirectToGoogle(): RedirectResponse
     {
         return Socialite::driver('google')->redirect();
@@ -35,7 +33,7 @@ class OAuthLoginController extends Controller
     {
         $googleUser = Socialite::driver('google')->user();
 
-        $user = User::where('email', '=', $googleUser->email)->first();
+        $user = $this->userRepository->getUserByEmail((string)$googleUser->email);
 
         if (!$user) {
             $validator = Validator::make((array)$googleUser, [
@@ -49,11 +47,11 @@ class OAuthLoginController extends Controller
                     ->withErrors(['email' => trans('auth.Google failed')]);
             }
 
-            $user = User::create([
+            $user = $this->userRepository->createUser([
                 'name' => (string)$googleUser->name,
                 'email' => (string)$googleUser->email,
                 'provider_id' => (int)$googleUser->id,
-                'password' => Hash::make((string)$googleUser->email),
+                'password' => (string)$googleUser->email,
             ]);
 
             event(new Registered($user));
