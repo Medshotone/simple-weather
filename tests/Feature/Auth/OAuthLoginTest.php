@@ -10,11 +10,11 @@ use Laravel\Socialite\Contracts\Factory as Socialite;
 use Laravel\Socialite\Two\GoogleProvider;
 use Laravel\Socialite\Two\User as SocialUser;
 
-class LoginWithGoogleTest extends TestCase
+class OAuthLoginTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function mockSocialiteFacade($email = 'foo@bar.com', $token = 'foo', $id = 1)
+    public function mockGoogleSocialiteFacade($email = 'foo@bar.com', $token = 'foo', $id = 1)
     {
         $socialiteUser = $this->createMock(SocialUser::class);
         $socialiteUser->token = $token;
@@ -50,7 +50,7 @@ class LoginWithGoogleTest extends TestCase
         $user = User::factory()->create();
 
         // Mock the Facade and return a User Object with the email 'foo@bar.com'
-        $this->mockSocialiteFacade($user->email);
+        $this->mockGoogleSocialiteFacade($user->email);
 
         $this->get(route('login.google.callback'))
             ->assertRedirect(RouteServiceProvider::HOME);
