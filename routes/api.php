@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Auth\ApiAuthController;
+use App\Http\Controllers\API\Auth\ApiOAuthLoginController;
 use App\Http\Controllers\API\ApiHomeController;
 
 /*
@@ -19,6 +20,11 @@ Route::post('/login', [ApiAuthController::class, 'login'])
     ->name('api.login');
 Route::post('/register', [ApiAuthController::class, 'register'])
     ->name('api.register');
+
+// Google login
+Route::post('/login/google', [ApiOAuthLoginController::class, 'googleLogin'])
+    ->name('api.login.google');
+
 
 Route::middleware('auth:sanctum')
     ->get('/home', [ApiHomeController::class, 'json'])
