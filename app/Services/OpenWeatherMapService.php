@@ -27,7 +27,7 @@ class OpenWeatherMapService implements WeatherServicesInterface
     public function getWeatherByLocation(string $lat, string $lon): array
     {
         $cash_name = 'location_' . $lat . '+' . $lon;
-        if ($weather_data = $this->getWeatherDataCache($cash_name)) {
+        if ($weather_data = $this->getWeatherDataCache($cash_name)['main'] ?? []) {
             return $weather_data;
         }
 
