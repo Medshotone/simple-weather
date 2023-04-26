@@ -9,7 +9,16 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
-                    You're logged in!
+                    {{ __("You're logged in!") }}
+                </div>
+                <div class="p-6 bg-white border-b border-gray-200">
+                    <form id="token-form" method="GET" action="{{ route('token') }}">
+                        @csrf
+
+                        <x-button class="ml-3">
+                            {{ __('Generate token') }}
+                        </x-button>
+                    </form>
                 </div>
                 <div class="p-6 bg-white border-b border-gray-200">
                     <pre>
@@ -22,4 +31,24 @@
             </div>
         </div>
     </div>
+    <script>
+        const form = document.querySelector('#token-form');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            fetch(form.action, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value,
+                }
+            })
+                .then(response => response.json())
+                .then(json => {
+                    form.querySelector('button[type="submit"]').textContent = json.data.token;
+                });
+        });
+    </script>
 </x-app-layout>

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TokenController;
 use App\Http\Controllers\HomeController;
 
 /*
@@ -19,5 +20,9 @@ Route::redirect('/', '/home');
 Route::get('/home', [HomeController::class, 'index'])
     ->middleware(['auth'])
     ->name('home');
+
+Route::get('/token', [TokenController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('token');
 
 require __DIR__.'/auth.php';
