@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\UserRepositoryInterface;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -24,12 +25,16 @@ class UserRepository implements UserRepositoryInterface
      */
     function createUser(array $user): Authenticatable
     {
-        return User::create([
+        $user = User::create([
             'name' => $user['name'],
             'email' => $user['email'],
             'provider_id' => $user['id'] ?? null,
             'password' => Hash::make($user['password'] ?? $user['email']),
         ]);
+
+        event(new Registered($user));
+
+        return $user;
     }
 
 

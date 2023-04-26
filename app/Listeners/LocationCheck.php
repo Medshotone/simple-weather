@@ -3,8 +3,7 @@
 namespace App\Listeners;
 
 use App\Interfaces\LocationCheckRepositoryInterface;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Login;
 
 class LocationCheck
@@ -19,12 +18,7 @@ class LocationCheck
         $this->locationCheckRepository = $locationCheckRepository;
     }
 
-
-    /**
-     * @param Login $event
-     * @return void
-     */
-    public function handle(Login $event):void
+    public function handle(Login|Registered $event):void
     {
         $user = $event->user;
 

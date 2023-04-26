@@ -38,8 +38,6 @@ class RegisteredUserController extends Controller
             'password' => $request->password,
         ]);
 
-        event(new Registered($user));
-
         Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME);
