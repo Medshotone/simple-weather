@@ -43,8 +43,8 @@ else
     echo ""
 fi
 
-./vendor/bin/sail up -d
-
+./vendor/bin/sail up -d &
+wait
 ./vendor/bin/sail php artisan key:generate &
 wait
 ./vendor/bin/sail php artisan migrate &
