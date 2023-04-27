@@ -47,7 +47,9 @@
             })
                 .then(response => response.json())
                 .then(json => {
-                    form.querySelector('button[type="submit"]').textContent = json.data.token;
+                    let button = form.querySelector('button[type="submit"]');
+                    button.style.textTransform = 'none';
+                    button.textContent = json.data.token;
                 });
         });
     </script>
